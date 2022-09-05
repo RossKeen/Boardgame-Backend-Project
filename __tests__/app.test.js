@@ -14,18 +14,26 @@ afterAll(() => {
 
 describe("/api/categories", () => {
   describe("GET", () => {
-    test("Should respond with an array of category objects with slug and description properties", () => {
+    test("200: Should respond with an array of category objects with slug and description properties", () => {
       return request(app)
         .get("/api/categories")
         .expect(200)
         .expect("Content-Type", "application/json; charset=utf-8")
-        .then((res) => {
-          expect(Array.isArray(res.body)).toBe(true);
-          expect(res.body.length > 0).toBe(true);
-          res.body.forEach((categoryObject) => {
+        .then(({ body }) => {
+          expect(Array.isArray(body)).toBe(true);
+          expect(body.length > 0).toBe(true);
+          body.forEach((categoryObject) => {
             expect(categoryObject).toHaveProperty("slug");
             expect(categoryObject).toHaveProperty("description");
           });
+        });
+    });
+    test("404: Should respond with an error if the user enters the error incorrectly", () => {
+      return request(app)
+        .get("/api/categoriez")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not found");
         });
     });
   });

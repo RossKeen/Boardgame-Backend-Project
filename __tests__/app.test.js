@@ -38,3 +38,26 @@ describe("/api/categories", () => {
     });
   });
 });
+
+describe("/api/reviews/:review_id", () => {
+  describe("GET", () => {
+    test("200: responds with a review object with correct properties", () => {
+      return request(app)
+        .get("/api/reviews/3")
+        .expect(200)
+        .expect("Content-Type", "application/json; charset=utf-8")
+        .then(({ body }) => {
+          expect(typeof body).toBe("object");
+          expect(body).toHaveProperty("review_id", 3);
+          expect(body).toHaveProperty("title", "Ultimate Werewolf");
+          expect(body).toHaveProperty("review_body", "We couldn't find the werewolf!");
+          expect(body).toHaveProperty("designer", "Akihisa Okui");
+          expect(body).toHaveProperty("review_img_url", "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png");
+          expect(body).toHaveProperty("votes", 5);
+          expect(body).toHaveProperty("category", "social deduction");
+          expect(body).toHaveProperty("owner", "bainesface");
+          expect(body).toHaveProperty("created_at", expect.any(String));
+        });
+    });
+  });
+});

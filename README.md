@@ -17,3 +17,5 @@ Then add the following text to each file respectively:
 - `PGDATABASE=nc_games_test`
 
 These files should be automatically added to `.gitignore`
+
+If you are unsure, there is a file called `.env-example` which gives an example of how your files should look.

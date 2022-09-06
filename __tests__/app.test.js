@@ -48,7 +48,7 @@ describe("/api/users", () => {
         .expect("Content-Type", "application/json; charset=utf-8")
         .then(({ body }) => {
           expect(Array.isArray(body)).toBe(true);
-          expect(body.length > 0).toBe(true);
+          expect(body.length === 4).toBe(true);
           body.forEach((user) => {
             expect(user).toHaveProperty("username");
             expect(user).toHaveProperty("name");

@@ -13,8 +13,12 @@ exports.updateReview = (review_id, inc_votes) => {
   return db
     .query("SELECT votes FROM reviews WHERE review_id = $1", [review_id])
     .then(({ rows }) => {
-      const currentVotes = rows[0].votes;
-      return db.query("UPDATE reviews SET votes = $1 WHERE review_id = $2 RETURNING *", [currentVotes + inc_votes, review_id]);
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "No review exists with that ID" });
+      } else {
+        const currentVotes = rows[0].votes;
+        return db.query("UPDATE reviews SET votes = $1 WHERE review_id = $2 RETURNING *", [currentVotes + inc_votes, review_id]);
+      }
     })
     .then(({ rows }) => {
       return rows[0];

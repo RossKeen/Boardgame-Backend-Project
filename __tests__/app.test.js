@@ -73,6 +73,16 @@ describe("/api/reviews/:review_id", () => {
           expect(review).toHaveProperty("created_at", expect.any(String));
         });
     });
+    describe("Error handling", () => {
+      test("404: Should respond with an appropriate message if no review exists with the given ID.", () => {
+        return request(app)
+          .get("/api/reviews/9999")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("No review exists with that ID");
+          });
+      });
+    });
   });
   describe("PATCH", () => {
     test("200: Should update the votes property of the given review", () => {
@@ -95,15 +105,16 @@ describe("/api/reviews/:review_id", () => {
           expect(review).toHaveProperty("created_at", expect.any(String));
         });
     });
-  });
-  describe("Error handling", () => {
-    test("404: Should respond with an appropriate message if no review exists with the given ID.", () => {
-      return request(app)
-        .get("/api/reviews/9999")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("No review exists with that ID");
-        });
+    describe("Error handling", () => {
+      test("404: Should respond with an appropriate message if no review exists with the given ID", () => {
+        return request(app)
+          .patch("/api/reviews/9999")
+          .send({ inc_votes: 10 })
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("No review exists with that ID");
+          });
+      });
     });
   });
 });

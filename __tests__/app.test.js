@@ -29,7 +29,7 @@ describe("/api/categories", () => {
         });
     });
     describe("Error handling", () => {
-      test("404: Should respond with an error if the user enters the error incorrectly", () => {
+      test("404: Should respond with an error if the user enters the path incorrectly", () => {
         return request(app)
           .get("/api/categoriez")
           .expect(404)

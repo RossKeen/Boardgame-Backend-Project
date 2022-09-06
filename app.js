@@ -1,5 +1,5 @@
 const express = require("express");
-const { send404 } = require("./controllers/404");
+const { send400 } = require("./controllers/400");
 const { getCategories } = require("./controllers/categories");
 const { getReviewById } = require("./controllers/reviews");
 const { handleCustomErrors, handlePsqlErrors, handleServerErrors } = require("./errors");
@@ -10,7 +10,7 @@ app.get("/api/categories", getCategories);
 
 app.get("/api/reviews/:review_id", getReviewById);
 
-app.all("*", send404);
+app.all("*", send400);
 
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);

@@ -12,6 +12,17 @@ afterAll(() => {
   return db.end();
 });
 
+describe("400: Bad path errors", () => {
+  test("400: Should respond with an appropriate error message if the user enters an invalid path", () => {
+    return request(app)
+      .get("/api/reviews/invalid_path")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad path");
+      });
+  });
+});
+
 describe("/api/categories", () => {
   describe("GET", () => {
     test("200: Should respond with an array of category objects with slug and description properties", () => {
@@ -29,12 +40,12 @@ describe("/api/categories", () => {
         });
     });
     describe("Error handling", () => {
-      test("404: Should respond with an error if the user enters the path incorrectly", () => {
+      test("400: Should respond with an error if the user enters the path incorrectly", () => {
         return request(app)
           .get("/api/categoriez")
-          .expect(404)
+          .expect(400)
           .then(({ body }) => {
-            expect(body.msg).toBe("Not found");
+            expect(body.msg).toBe("Bad path");
           });
       });
     });

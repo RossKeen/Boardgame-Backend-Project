@@ -115,6 +115,15 @@ describe("/api/reviews/:review_id", () => {
             expect(body.msg).toBe("No review exists with that ID");
           });
       });
+      test("400: Should respond with an appropriate message if the user sends an invalid request body", () => {
+        return request(app)
+          .patch("/api/reviews/3")
+          .send({ inc_votes: "ten" })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad request");
+          });
+      });
     });
   });
 });

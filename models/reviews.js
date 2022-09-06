@@ -10,6 +10,9 @@ exports.selectReviewById = (review_id) => {
 };
 
 exports.updateReview = (review_id, inc_votes) => {
+  if (typeof inc_votes !== "number") {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
   return db
     .query("SELECT votes FROM reviews WHERE review_id = $1", [review_id])
     .then(({ rows }) => {

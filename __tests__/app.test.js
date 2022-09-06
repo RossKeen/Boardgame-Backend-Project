@@ -38,3 +38,23 @@ describe("/api/categories", () => {
     });
   });
 });
+
+describe("/api/users", () => {
+  describe("GET", () => {
+    test("200: Should respond with an array of all users", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .expect("Content-Type", "application/json; charset=utf-8")
+        .then(({ body }) => {
+          expect(Array.isArray(body)).toBe(true);
+          expect(body.length > 0).toBe(true);
+          body.forEach((user) => {
+            expect(user).toHaveProperty("username");
+            expect(user).toHaveProperty("name");
+            expect(user).toHaveProperty("avatar_url");
+          });
+        });
+    });
+  });
+});

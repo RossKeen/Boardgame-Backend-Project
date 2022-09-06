@@ -28,13 +28,15 @@ describe("/api/categories", () => {
           });
         });
     });
-    test("404: Should respond with an error if the user enters the error incorrectly", () => {
-      return request(app)
-        .get("/api/categoriez")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Not found");
-        });
+    describe("Error handling", () => {
+      test("404: Should respond with an error if the user enters the error incorrectly", () => {
+        return request(app)
+          .get("/api/categoriez")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Not found");
+          });
+      });
     });
   });
 });
@@ -58,6 +60,16 @@ describe("/api/reviews/:review_id", () => {
           expect(body).toHaveProperty("owner", "bainesface");
           expect(body).toHaveProperty("created_at", expect.any(String));
         });
+    });
+    describe("Error handling", () => {
+      test("404: Should respond with an appropriate message if no review exists with the given ID.", () => {
+        return request(app)
+          .get("/api/reviews/9999")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("No review exists with that ID");
+          });
+      });
     });
   });
 });

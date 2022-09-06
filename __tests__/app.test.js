@@ -34,8 +34,7 @@ describe("/api/categories", () => {
           expect(Array.isArray(body.categories)).toBe(true);
           expect(body.categories.length === 4).toBe(true);
           body.categories.forEach((categoryObject) => {
-            expect(categoryObject).toHaveProperty("slug");
-            expect(categoryObject).toHaveProperty("description");
+            expect(categoryObject).toEqual(expect.objectContaining({ slug: expect.any(String), description: expect.any(String) }));
           });
         });
     });
@@ -62,15 +61,19 @@ describe("/api/reviews/:review_id", () => {
         .then(({ body }) => {
           const review = body.review;
           expect(typeof review).toBe("object");
-          expect(review).toHaveProperty("review_id", 3);
-          expect(review).toHaveProperty("title", "Ultimate Werewolf");
-          expect(review).toHaveProperty("review_body", "We couldn't find the werewolf!");
-          expect(review).toHaveProperty("designer", "Akihisa Okui");
-          expect(review).toHaveProperty("review_img_url", "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png");
-          expect(review).toHaveProperty("votes", 5);
-          expect(review).toHaveProperty("category", "social deduction");
-          expect(review).toHaveProperty("owner", "bainesface");
-          expect(review).toHaveProperty("created_at", expect.any(String));
+          expect(review).toEqual(
+            expect.objectContaining({
+              review_id: 3,
+              title: "Ultimate Werewolf",
+              review_body: "We couldn't find the werewolf!",
+              designer: "Akihisa Okui",
+              review_img_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+              votes: 5,
+              category: "social deduction",
+              owner: "bainesface",
+              created_at: expect.any(String),
+            })
+          );
         });
     });
     describe("Error handling", () => {
@@ -94,15 +97,19 @@ describe("/api/reviews/:review_id", () => {
         .then(({ body }) => {
           const review = body.review;
           expect(typeof review).toBe("object");
-          expect(review).toHaveProperty("review_id", 3);
-          expect(review).toHaveProperty("title", "Ultimate Werewolf");
-          expect(review).toHaveProperty("review_body", "We couldn't find the werewolf!");
-          expect(review).toHaveProperty("designer", "Akihisa Okui");
-          expect(review).toHaveProperty("review_img_url", "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png");
-          expect(review).toHaveProperty("votes", 15);
-          expect(review).toHaveProperty("category", "social deduction");
-          expect(review).toHaveProperty("owner", "bainesface");
-          expect(review).toHaveProperty("created_at", expect.any(String));
+          expect(review).toEqual(
+            expect.objectContaining({
+              review_id: 3,
+              title: "Ultimate Werewolf",
+              review_body: "We couldn't find the werewolf!",
+              designer: "Akihisa Okui",
+              review_img_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+              votes: 15,
+              category: "social deduction",
+              owner: "bainesface",
+              created_at: expect.any(String),
+            })
+          );
         });
     });
     describe("Error handling", () => {
@@ -139,9 +146,7 @@ describe("/api/users", () => {
           expect(Array.isArray(body.users)).toBe(true);
           expect(body.users.length === 4).toBe(true);
           body.users.forEach((user) => {
-            expect(user).toHaveProperty("username");
-            expect(user).toHaveProperty("name");
-            expect(user).toHaveProperty("avatar_url");
+            expect(user).toEqual(expect.objectContaining({ username: expect.any(String), name: expect.any(String), avatar_url: expect.any(String) }));
           });
         });
     });

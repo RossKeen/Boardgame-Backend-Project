@@ -20,9 +20,9 @@ describe("/api/categories", () => {
         .expect(200)
         .expect("Content-Type", "application/json; charset=utf-8")
         .then(({ body }) => {
-          expect(Array.isArray(body)).toBe(true);
-          expect(body.length > 0).toBe(true);
-          body.forEach((categoryObject) => {
+          expect(Array.isArray(body.categories)).toBe(true);
+          expect(body.categories.length > 0).toBe(true);
+          body.categories.forEach((categoryObject) => {
             expect(categoryObject).toHaveProperty("slug");
             expect(categoryObject).toHaveProperty("description");
           });
@@ -47,9 +47,9 @@ describe("/api/users", () => {
         .expect(200)
         .expect("Content-Type", "application/json; charset=utf-8")
         .then(({ body }) => {
-          expect(Array.isArray(body)).toBe(true);
-          expect(body.length === 4).toBe(true);
-          body.forEach((user) => {
+          expect(Array.isArray(body.users)).toBe(true);
+          expect(body.users.length === 4).toBe(true);
+          body.users.forEach((user) => {
             expect(user).toHaveProperty("username");
             expect(user).toHaveProperty("name");
             expect(user).toHaveProperty("avatar_url");

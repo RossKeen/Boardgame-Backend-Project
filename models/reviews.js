@@ -8,3 +8,15 @@ exports.selectReviewById = (review_id) => {
     return res.rows[0];
   });
 };
+
+exports.updateReview = (review_id, inc_votes) => {
+  return db
+    .query("SELECT votes FROM reviews WHERE review_id = $1", [review_id])
+    .then(({ rows }) => {
+      const currentVotes = rows[0].votes;
+      return db.query("UPDATE reviews SET votes = $1 WHERE review_id = $2 RETURNING *", [currentVotes + inc_votes, review_id]);
+    })
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};

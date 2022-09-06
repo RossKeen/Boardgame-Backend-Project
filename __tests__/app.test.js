@@ -21,7 +21,7 @@ describe("/api/categories", () => {
         .expect("Content-Type", "application/json; charset=utf-8")
         .then(({ body }) => {
           expect(Array.isArray(body.categories)).toBe(true);
-          expect(body.categories.length > 0).toBe(true);
+          expect(body.categories.length === 4).toBe(true);
           body.categories.forEach((categoryObject) => {
             expect(categoryObject).toHaveProperty("slug");
             expect(categoryObject).toHaveProperty("description");

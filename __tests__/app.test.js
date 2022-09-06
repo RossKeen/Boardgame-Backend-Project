@@ -72,6 +72,7 @@ describe("/api/reviews/:review_id", () => {
               category: "social deduction",
               owner: "bainesface",
               created_at: expect.any(String),
+              comment_count: 3,
             })
           );
         });

@@ -31,9 +31,9 @@ describe("/api/categories", () => {
         .expect(200)
         .expect("Content-Type", "application/json; charset=utf-8")
         .then(({ body }) => {
-          expect(Array.isArray(body)).toBe(true);
-          expect(body.length > 0).toBe(true);
-          body.forEach((categoryObject) => {
+          expect(Array.isArray(body.categories)).toBe(true);
+          expect(body.categories.length === 4).toBe(true);
+          body.categories.forEach((categoryObject) => {
             expect(categoryObject).toHaveProperty("slug");
             expect(categoryObject).toHaveProperty("description");
           });
@@ -81,6 +81,26 @@ describe("/api/reviews/:review_id", () => {
             expect(body.msg).toBe("No review exists with that ID");
           });
       });
+    });
+  });
+});
+
+describe("/api/users", () => {
+  describe("GET", () => {
+    test("200: Should respond with an array of all users", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .expect("Content-Type", "application/json; charset=utf-8")
+        .then(({ body }) => {
+          expect(Array.isArray(body.users)).toBe(true);
+          expect(body.users.length === 4).toBe(true);
+          body.users.forEach((user) => {
+            expect(user).toHaveProperty("username");
+            expect(user).toHaveProperty("name");
+            expect(user).toHaveProperty("avatar_url");
+          });
+        });
     });
   });
 });

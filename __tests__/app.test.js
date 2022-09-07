@@ -60,7 +60,7 @@ describe("/api/reviews", () => {
         .expect(200)
         .expect("Content-Type", "application/json; charset=utf-8")
         .then(({ body }) => {
-          const reviews = body.reviews;
+          const { reviews } = body;
           expect(Array.isArray(reviews)).toBe(true);
           expect(reviews.length === 13).toBe(true);
           reviews.forEach((review) => {
@@ -81,6 +81,35 @@ describe("/api/reviews", () => {
           });
           expect(reviews).toBeSortedBy("created_at", { descending: true });
         });
+    });
+    describe("Queries", () => {
+      test("accepts a category query which responds with only those reviews which have the category", () => {
+        return request(app)
+          .get("/api/reviews?category=social+deduction")
+          .expect(200)
+          .expect("Content-Type", "application/json; charset=utf-8")
+          .then(({ body }) => {
+            const { reviews } = body;
+            expect(reviews.length).toBe(11);
+            reviews.forEach((review) => {
+              expect(review).toEqual(
+                expect.objectContaining({
+                  review_id: expect.any(Number),
+                  title: expect.any(String),
+                  review_body: expect.any(String),
+                  designer: expect.any(String),
+                  review_img_url: expect.any(String),
+                  votes: expect.any(Number),
+                  category: "social deduction",
+                  owner: expect.any(String),
+                  created_at: expect.any(String),
+                  comment_count: expect.any(Number),
+                })
+              );
+            });
+            expect(reviews).toBeSortedBy("created_at", { descending: true });
+          });
+      });
     });
   });
 });

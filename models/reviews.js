@@ -1,12 +1,23 @@
 const db = require("../db/connection");
 
 exports.selectReviewById = (review_id) => {
-  return db.query("SELECT * FROM reviews WHERE review_id = $1;", [review_id]).then((res) => {
-    if (res.rows.length === 0) {
-      return Promise.reject({ status: 404, msg: "No review exists with that ID" });
-    }
-    return res.rows[0];
-  });
+  return db
+    .query(
+      `SELECT reviews.*, COUNT(comments.comment_id) AS comment_count 
+      FROM reviews 
+      LEFT JOIN comments 
+      ON reviews.review_id = comments.review_id 
+      WHERE reviews.review_id = $1 
+      GROUP BY reviews.review_id;`,
+      [review_id]
+    )
+    .then(({ rows }) => {
+      if (!rows[0]) {
+        return Promise.reject({ status: 404, msg: "No review exists with that ID" });
+      }
+      rows[0].comment_count = parseInt(rows[0].comment_count);
+      return rows[0];
+    });
 };
 
 exports.updateReview = (review_id, inc_votes) => {

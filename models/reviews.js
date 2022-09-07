@@ -32,8 +32,8 @@ exports.selectReviews = (category) => {
   const queryValues = [];
   let queryStr = `SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id`;
   if (category) {
-    if (!["social deduction", "dexterity", "euro game"].includes(category)) {
-      return Promise.reject({ status: 400, msg: "Invalid sort query" });
+    if (!["social deduction", "dexterity", "euro game", "children's games"].includes(category)) {
+      return Promise.reject({ status: 400, msg: "Invalid category query" });
     } else {
       queryValues.push(category);
       queryStr += ` WHERE category = $1`;

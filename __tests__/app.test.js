@@ -111,6 +111,16 @@ describe("/api/reviews", () => {
           });
       });
     });
+    describe("Error Handling", () => {
+      test("400: responds with an error when an invalid category query is entered", () => {
+        return request(app)
+          .get("/api/reviews?category=social+deduction;+DROP+TABLE+reviews;")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid category query");
+          });
+      });
+    });
   });
 });
 

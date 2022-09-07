@@ -31,9 +31,13 @@ exports.updateReview = (review_id, inc_votes) => {
 exports.selectReviews = () => {
   return db
     .query(
-      "SELECT category, reviews.created_at, designer, owner, review_body, reviews.review_id, review_img_url, title, reviews.votes FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id ORDER BY reviews.created_at DESC;"
+      "SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id GROUP BY reviews.review_id, reviews.created_at ORDER BY reviews.created_at DESC;"
     )
     .then(({ rows }) => {
+      rows.forEach((review) => {
+        review.comment_count = parseInt(review.comment_count);
+      });
+      console.log(rows);
       return rows;
     });
 };

@@ -51,51 +51,37 @@ describe("/api/categories", () => {
   });
 });
 
-// describe("/api/reviews", () => {
-//   describe("GET", () => {
-//     test("200: responds with an array of review objects, sorted by date descending", () => {
-//       return request(app)
-//         .get("/api/reviews")
-//         .expect(200)
-//         .expect("Content-Type", "application/json; charset=utf-8")
-//         .then(({ body }) => {
-//           const reviews = body.reviews;
-//           expect(Array.isArray(reviews)).toBe(true);
-//           expect(reviews.length === 13).toBe(true);
-//           reviews.forEach((review) => {
-//             console.log(review);
-//             expect(review).toEqual(
-//               expect.objectContaining({
-//                 review_id: expect.any(Number),
-//                 title: expect.any(String),
-//                 review_body: expect.any(String),
-//                 designer: expect.any(String),
-//                 review_img_url: expect.any(String),
-//                 votes: expect.any(Number),
-//                 category: expect.any(String),
-//                 owner: expect.any(String),
-//                 created_at: expect.any(String),
-//                 comment_count: expect.any(Number),
-//               })
-//             );
-//           });
-//           expect(reviews[4]).toEqual(
-//             expect.objectContaining({
-//               review_id: 8,
-//               title: "One Night Ultimate Werewolf",
-//               review_body: "We couldn't find the werewolf!",
-//               designer: "Akihisa Okui",
-//               review_img_url: "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-//               votes: 5,
-//               category: "social deduction",
-//               owner: "mallionaire",
-//               created_at: expect.any(String),
-//             })
-//           );
-//         });
-//     });
-//   });
-// });
+describe("/api/reviews", () => {
+  describe("GET", () => {
+    test("200: responds with an array of review objects, sorted by date descending", () => {
+      return request(app)
+        .get("/api/reviews")
+        .expect(200)
+        .expect("Content-Type", "application/json; charset=utf-8")
+        .then(({ body }) => {
+          const reviews = body.reviews;
+          expect(Array.isArray(reviews)).toBe(true);
+          expect(reviews.length === 13).toBe(true);
+          reviews.forEach((review) => {
+            expect(review).toEqual(
+              expect.objectContaining({
+                review_id: expect.any(Number),
+                title: expect.any(String),
+                review_body: expect.any(String),
+                designer: expect.any(String),
+                review_img_url: expect.any(String),
+                votes: expect.any(Number),
+                category: expect.any(String),
+                owner: expect.any(String),
+                created_at: expect.any(String),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+  });
+});
 
 describe("/api/reviews/:review_id", () => {
   describe("GET", () => {

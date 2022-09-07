@@ -2,22 +2,21 @@ const db = require("../db/connection");
 
 exports.selectReviewById = (review_id) => {
   return db
-    .query("ALTER TABLE reviews ADD COLUMN comment_count INT;")
-    .then(() => {
-      return db.query("SELECT COUNT(comment_id) AS comment_count FROM reviews JOIN comments ON reviews.review_id = comments.review_id WHERE comments.review_id = 3;");
-    })
-    .then((res) => {
-      const comment_count = res.rows[0].comment_count;
-      return db.query("UPDATE reviews SET comment_count = $2 WHERE review_id = $1", [review_id, comment_count]);
-    })
-    .then(() => {
-      return db.query("SELECT * FROM reviews WHERE review_id = $1;", [review_id]);
-    })
-    .then((res) => {
-      if (res.rows.length === 0) {
+    .query(
+      `SELECT reviews.review_id, title, review_body, designer, review_img_url, reviews.votes, category, owner, reviews.created_at, COUNT(comments.comment_id) AS comment_count 
+      FROM reviews 
+      LEFT JOIN comments 
+      ON reviews.review_id = comments.review_id 
+      WHERE reviews.review_id = $1 
+      GROUP BY reviews.review_id;`,
+      [review_id]
+    )
+    .then(({ rows }) => {
+      if (!rows[0]) {
         return Promise.reject({ status: 404, msg: "No review exists with that ID" });
       }
-      return res.rows[0];
+      rows[0].comment_count = parseInt(rows[0].comment_count);
+      return rows[0];
     });
 };
 

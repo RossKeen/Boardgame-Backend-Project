@@ -3,6 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
+const { response } = require("../app");
 require("jest-sorted");
 
 beforeEach(() => {
@@ -83,7 +84,7 @@ describe("/api/reviews", () => {
         });
     });
     describe("Queries", () => {
-      test("accepts a category query which responds with only those reviews which have the category", () => {
+      test("200: accepts a category query which responds with only those reviews which have the category", () => {
         return request(app)
           .get("/api/reviews?category=social+deduction")
           .expect(200)
@@ -108,6 +109,15 @@ describe("/api/reviews", () => {
               );
             });
             expect(reviews).toBeSortedBy("created_at", { descending: true });
+          });
+      });
+      test("200: responds with an empty array if there are no reviews with the queried category", () => {
+        return request(app)
+          .get("/api/reviews?category=children's+games")
+          .expect(200)
+          .then(({ body }) => {
+            const { reviews } = body;
+            expect(reviews).toEqual([]);
           });
       });
     });

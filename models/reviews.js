@@ -37,7 +37,6 @@ exports.selectReviews = () => {
       rows.forEach((review) => {
         review.comment_count = parseInt(review.comment_count);
       });
-      console.log(rows);
       return rows;
     });
 };

@@ -3,6 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
+require("jest-sorted");
 
 beforeEach(() => {
   return seed(testData);
@@ -78,6 +79,7 @@ describe("/api/reviews", () => {
               })
             );
           });
+          expect(reviews).toBeSortedBy("created_at", { descending: true });
         });
     });
   });

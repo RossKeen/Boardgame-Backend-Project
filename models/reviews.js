@@ -27,3 +27,13 @@ exports.updateReview = (review_id, inc_votes) => {
       return rows[0];
     });
 };
+
+exports.selectReviews = () => {
+  return db
+    .query(
+      "SELECT category, reviews.created_at, designer, owner, review_body, reviews.review_id, review_img_url, title, reviews.votes FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id ORDER BY reviews.created_at DESC;"
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
+};

@@ -3,7 +3,7 @@ const db = require("../db/connection");
 exports.selectReviewById = (review_id) => {
   return db
     .query(
-      `SELECT reviews.review_id, title, review_body, designer, review_img_url, reviews.votes, category, owner, reviews.created_at, COUNT(comments.comment_id) AS comment_count 
+      `SELECT reviews.*, COUNT(comments.comment_id) AS comment_count 
       FROM reviews 
       LEFT JOIN comments 
       ON reviews.review_id = comments.review_id 

@@ -29,22 +29,31 @@ exports.updateReview = (review_id, inc_votes) => {
 };
 
 exports.selectReviews = (category) => {
-  const queryValues = [];
-  let queryStr = `SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id`;
-  if (category) {
-    if (!["social deduction", "dexterity", "euro game", "children's games"].includes(category)) {
-      return Promise.reject({ status: 400, msg: "Invalid category query" });
-    } else {
-      queryValues.push(category);
-      queryStr += ` WHERE category = $1`;
-    }
-  }
-  queryStr += ` GROUP BY reviews.review_id, reviews.created_at ORDER BY reviews.created_at DESC;`;
+  return db
+    .query("SELECT slug FROM categories;")
+    .then(({ rows }) => {
+      const categoriesArr = [];
+      rows.forEach((category) => {
+        categoriesArr.push(category.slug);
+      });
+      const queryValues = [];
+      let queryStr = `SELECT reviews.*, COUNT(comment_id) AS comment_count FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id`;
+      if (category) {
+        if (!categoriesArr.includes(category)) {
+          return Promise.reject({ status: 400, msg: "Invalid category query" });
+        } else {
+          queryValues.push(category);
+          queryStr += ` WHERE category = $1`;
+        }
+      }
+      queryStr += ` GROUP BY reviews.review_id, reviews.created_at ORDER BY reviews.created_at DESC;`;
 
-  return db.query(queryStr, queryValues).then(({ rows }) => {
-    rows.forEach((review) => {
-      review.comment_count = parseInt(review.comment_count);
+      return db.query(queryStr, queryValues);
+    })
+    .then(({ rows }) => {
+      rows.forEach((review) => {
+        review.comment_count = parseInt(review.comment_count);
+      });
+      return rows;
     });
-    return rows;
-  });
 };

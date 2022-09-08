@@ -219,6 +219,35 @@ describe("/api/reviews/:review_id", () => {
   });
 });
 
+describe("/api/reviews/:review_id/comments", () => {
+  describe("GET", () => {
+    test("200: should respond with an array of comment objects, each of which with the correct properties", () => {
+      return request(app)
+        .get("/api/reviews/2/comments")
+        .expect(200)
+        .expect("Content-Type", "application/json; charset=utf-8")
+        .then(({ body }) => {
+          const { comments } = body;
+          expect(Array.isArray(comments)).toBe(true);
+          expect(comments.length).toBe(3);
+          comments.forEach((comment) => {
+            expect(typeof comment).toBe("object");
+            expect(comment).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                review_id: 2,
+              })
+            );
+          });
+        });
+    });
+  });
+});
+
 describe("/api/users", () => {
   describe("GET", () => {
     test("200: Should respond with an array of all users", () => {

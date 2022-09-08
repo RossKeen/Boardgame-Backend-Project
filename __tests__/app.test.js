@@ -3,6 +3,8 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
+const { response } = require("../app");
+require("jest-sorted");
 
 beforeEach(() => {
   return seed(testData);
@@ -45,6 +47,87 @@ describe("/api/categories", () => {
           .expect(400)
           .then(({ body }) => {
             expect(body.msg).toBe("Bad path");
+          });
+      });
+    });
+  });
+});
+
+describe("/api/reviews", () => {
+  describe("GET", () => {
+    test("200: responds with an array of review objects, sorted by date descending", () => {
+      return request(app)
+        .get("/api/reviews")
+        .expect(200)
+        .expect("Content-Type", "application/json; charset=utf-8")
+        .then(({ body }) => {
+          const { reviews } = body;
+          expect(Array.isArray(reviews)).toBe(true);
+          expect(reviews.length === 13).toBe(true);
+          reviews.forEach((review) => {
+            expect(review).toEqual(
+              expect.objectContaining({
+                review_id: expect.any(Number),
+                title: expect.any(String),
+                review_body: expect.any(String),
+                designer: expect.any(String),
+                review_img_url: expect.any(String),
+                votes: expect.any(Number),
+                category: expect.any(String),
+                owner: expect.any(String),
+                created_at: expect.any(String),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+          expect(reviews).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+    describe("Queries", () => {
+      test("200: accepts a category query which responds with only those reviews which have the category", () => {
+        return request(app)
+          .get("/api/reviews?category=social+deduction")
+          .expect(200)
+          .expect("Content-Type", "application/json; charset=utf-8")
+          .then(({ body }) => {
+            const { reviews } = body;
+            expect(reviews.length).toBe(11);
+            reviews.forEach((review) => {
+              expect(review).toEqual(
+                expect.objectContaining({
+                  review_id: expect.any(Number),
+                  title: expect.any(String),
+                  review_body: expect.any(String),
+                  designer: expect.any(String),
+                  review_img_url: expect.any(String),
+                  votes: expect.any(Number),
+                  category: "social deduction",
+                  owner: expect.any(String),
+                  created_at: expect.any(String),
+                  comment_count: expect.any(Number),
+                })
+              );
+            });
+            expect(reviews).toBeSortedBy("created_at", { descending: true });
+          });
+      });
+      test("200: responds with an empty array if there are no reviews with the queried category", () => {
+        return request(app)
+          .get("/api/reviews?category=children's+games")
+          .expect(200)
+          .then(({ body }) => {
+            const { reviews } = body;
+            expect(reviews).toEqual([]);
+          });
+      });
+    });
+    describe("Error Handling", () => {
+      test("400: responds with an error when an invalid category query is entered", () => {
+        return request(app)
+          .get("/api/reviews?category=social+deduction;+DROP+TABLE+reviews;")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid category query");
           });
       });
     });

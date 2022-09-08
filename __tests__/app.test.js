@@ -245,6 +245,16 @@ describe("/api/reviews/:review_id/comments", () => {
           });
         });
     });
+    describe("Error Handling", () => {
+      test("404: responds with an appropriate error when no review exits with the ID parameter", () => {
+        return request(app)
+          .get("/api/reviews/9999/comments")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("No review exists with that ID");
+          });
+      });
+    });
   });
 });
 

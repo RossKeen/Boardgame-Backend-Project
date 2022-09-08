@@ -70,9 +70,11 @@ exports.selectReviews = (category) => {
 };
 
 exports.selectCommentsByReviewId = (review_id) => {
-  return db.query("SELECT * FROM comments  WHERE review_id = $1;", [review_id]).then(({ rows }) => {
+  return db.query("SELECT reviews.title, comments.* FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id WHERE reviews.review_id = $1;", [review_id]).then(({ rows }) => {
     if (rows.length === 0) {
       return Promise.reject({ status: 404, msg: "No review exists with that ID" });
+    } else if (rows[0].comment_id === null) {
+      return [];
     }
     return rows;
   });

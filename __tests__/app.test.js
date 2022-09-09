@@ -445,6 +445,14 @@ describe("/api/comments/:comment_id", () => {
             expect(body.msg).toBe("Invalid comment ID");
           });
       });
+      test("404: responds with an appropriate error when the specified comment_id does not exist", () => {
+        return request(app)
+          .delete("/api/comments/9999")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("No comment exists with that ID");
+          });
+      });
     });
   });
 });

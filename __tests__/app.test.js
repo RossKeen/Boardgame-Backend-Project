@@ -291,10 +291,25 @@ describe("/api/reviews/:review_id/comments", () => {
               created_at: expect.any(String),
             })
           );
-          return db.query("SELECT COUNT(comment_id) AS comment_count FROM comments;").then(({ rows }) => {
-            expect(rows[0].comment_count).toBe("7");
-          });
+          return db.query("SELECT COUNT(comment_id) AS comment_count FROM comments;");
+        })
+        .then(({ rows }) => {
+          expect(rows[0].comment_count).toBe("7");
         });
+    });
+    describe("Error Handling", () => {
+      test("400: responds with an appropriate error when the review_id is invalid and does not post the comment", () => {
+        return request(app)
+          .post("/api/reviews/ten/comments")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad path");
+            return db.query("SELECT COUNT(comment_id) AS comment_count FROM comments;");
+          })
+          .then(({ rows }) => {
+            expect(rows[0].comment_count).toBe("6");
+          });
+      });
     });
   });
 });

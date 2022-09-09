@@ -8,9 +8,22 @@ A hosted version is available on https://rk-board-games.herokuapp.com/api/
 
 ## Setup Instructions
 
-This repository is available to fork and clone from https://github.com/RossKeen/Boardgame-Backend-Project
+    // install dependencies
+    npm install
 
-Ensure that all dependencies are installed locally by running `npm install` on the command line from within the repository.
+    // Set environment variables (see below)
+
+    // seed development data
+    npm run seed
+
+    // run test suites
+    npm test
+
+    // run unit testing only
+    npm test utils.test.js
+
+    // run integration tests only
+    npm test app.test.js
 
 ### Environment Variables
 
@@ -31,18 +44,6 @@ Then add the following text to each file respectively:
 These files should be automatically added to `.gitignore`
 
 If you are unsure, there is a file called `.env-example` which gives an example of how your files should look.
-
-### Seeding
-
-To run the seeding script, enter `npm run seed` on the command line. This will seed your local database with the development data.
-
-The test database will be automatically seeded whenever tests are run.
-
-### Testing
-
-To run tests, enter `npm test` on the command line. This will seed the test data and run the test suite every time it is run.
-
-If you wish only to view the tests related to the `app.js`, enter `npm test app.js` instead.
 
 ## Minimum Requirements
 

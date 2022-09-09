@@ -4,6 +4,7 @@ const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
 const { response } = require("../app");
+const e = require("express");
 require("jest-sorted");
 
 beforeEach(() => {
@@ -416,6 +417,24 @@ describe("/api/reviews", () => {
             });
           });
       });
+    });
+  });
+});
+
+describe("/api/comments/:comment_id", () => {
+  describe("DELETE", () => {
+    test("204: deletes the given comment and returns no content", () => {
+      return request(app)
+        .delete("/api/comments/4")
+        .expect(204)
+        .then(({ body }) => {
+          expect(body).toEqual({});
+          return db.query("SELECT comment_id FROM comments;");
+        })
+        .then(({ rows }) => {
+          expect(rows.length).toBe(5);
+          expect(rows).toEqual([{ comment_id: 1 }, { comment_id: 2 }, { comment_id: 3 }, { comment_id: 5 }, { comment_id: 6 }]);
+        });
     });
   });
 });

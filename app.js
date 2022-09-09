@@ -5,6 +5,7 @@ const { getCategories } = require("./controllers/categories");
 const { getUsers } = require("./controllers/users");
 const { getReviewById, patchReview, getReviews, getCommentsByReviewId } = require("./controllers/reviews");
 const { handleCustomErrors, handlePsqlErrors, handleServerErrors } = require("./errors");
+const { deleteComment } = require("./controllers/comments");
 
 const app = express();
 
@@ -17,6 +18,8 @@ app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewById);
 app.patch("/api/reviews/:review_id", patchReview);
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.all("*", send400);
 

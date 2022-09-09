@@ -419,6 +419,65 @@ describe("/api/reviews", () => {
       });
     });
   });
+  describe("POST", () => {
+    test("201: should create a new comment object on the specified review", () => {
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send({ username: "philippaclaire9", body: "A bit too french for me..." })
+        .expect(201)
+        .expect("Content-Type", "application/json; charset=utf-8")
+        .then(({ body }) => {
+          const { postedComment } = body;
+          expect(postedComment).toEqual(
+            expect.objectContaining({
+              comment_id: 7,
+              body: "A bit too french for me...",
+              review_id: 1,
+              author: "philippaclaire9",
+              votes: 0,
+              created_at: expect.any(String),
+            })
+          );
+          return db.query("SELECT COUNT(comment_id) AS comment_count FROM comments;");
+        })
+        .then(({ rows }) => {
+          expect(rows[0].comment_count).toBe("7");
+        });
+    });
+    describe("Error Handling", () => {
+      test("400: responds with an appropriate error when the review_id is invalid and does not post the comment", () => {
+        return request(app)
+          .post("/api/reviews/ten/comments")
+          .send({ username: "philippaclaire9", body: "A bit too french for me..." })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad path");
+            return db.query("SELECT COUNT(comment_id) AS comment_count FROM comments;");
+          })
+          .then(({ rows }) => {
+            expect(rows[0].comment_count).toBe("6");
+          });
+      });
+      test("404: responds with an appropriate error when no review exists with the ID parameter", () => {
+        return request(app)
+          .post("/api/reviews/9999/comments")
+          .send({ username: "philippaclaire9", body: "A bit too french for me..." })
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Not found");
+          });
+      });
+      test("401: responds with an appropriate error when a non-existent username tries to comment", () => {
+        return request(app)
+          .post("/api/reviews/1/comments")
+          .send({ username: "rosskeen97", body: "Is this named after the roman general Agricola?" })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid user");
+          });
+      });
+    });
+  });
 });
 
 describe("/api/comments/:comment_id", () => {

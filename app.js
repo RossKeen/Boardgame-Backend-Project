@@ -6,10 +6,13 @@ const { getUsers } = require("./controllers/users");
 const { getReviewById, patchReview, getReviews, getCommentsByReviewId, postComment } = require("./controllers/reviews");
 const { handleCustomErrors, handlePsqlErrors, handleServerErrors } = require("./errors");
 const { deleteComment } = require("./controllers/comments");
+const { getEndpoints } = require("./controllers/api");
 
 const app = express();
 
 app.use(express.json());
+
+app.get("/api", getEndpoints);
 
 app.get("/api/categories", getCategories);
 app.get("/api/users", getUsers);

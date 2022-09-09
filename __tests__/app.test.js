@@ -3,8 +3,6 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
-const { response } = require("../app");
-const e = require("express");
 require("jest-sorted");
 
 beforeEach(() => {
@@ -23,6 +21,130 @@ describe("400: Bad path errors", () => {
       .then(({ body }) => {
         expect(body.msg).toBe("Bad path");
       });
+  });
+});
+
+describe("/api", () => {
+  describe("GET", () => {
+    test("200: responds with a list of all endpoints ", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .expect("Content-Type", "application/json; charset=utf-8")
+        .then(({ body }) => {
+          expect(body).toEqual({
+            "GET /api": {
+              description: "serves up a json representation of all the available endpoints of the api",
+            },
+            "GET /api/categories": {
+              description: "serves an array of all categories",
+              queries: [],
+              exampleResponse: {
+                categories: [
+                  {
+                    description: "Players attempt to uncover each other's hidden role",
+                    slug: "Social deduction",
+                  },
+                ],
+              },
+            },
+            "GET /api/reviews": {
+              description: "serves an array of all reviews",
+              queries: ["category", "sort_by", "order"],
+              exampleResponse: {
+                reviews: [
+                  {
+                    title: "One Night Ultimate Werewolf",
+                    designer: "Akihisa Okui",
+                    owner: "happyamy2016",
+                    review_img_url: "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+                    category: "hidden-roles",
+                    created_at: "2021-01-25T11:16:54.963Z",
+                    votes: 5,
+                  },
+                ],
+              },
+            },
+            "GET /api/reviews/:review_id": {
+              description: "serves an individual array which matches the review_id parameter",
+              queries: [],
+              examplePath: "/api/reviews/3",
+              exampleResponse: {
+                review: {
+                  review_id: 3,
+                  title: "Ultimate Werewolf",
+                  review_body: "We couldn't find the werewolf!",
+                  designer: "Akihisa Okui",
+                  review_img_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+                  votes: 5,
+                  category: "social deduction",
+                  owner: "bainesface",
+                  created_at: "2021-01-25 11:16:54.963",
+                  comment_count: 3,
+                },
+              },
+            },
+            "PATCH /api/reviews/:review_id": {
+              description: "changes the votes on the given review and serves the updated review",
+              queries: [],
+              examplePath: "/api/reviews/3",
+              exampleRequest: {
+                inc_votes: 10,
+              },
+              exampleResponse: {
+                review: {
+                  review_id: 3,
+                  title: "Ultimate Werewolf",
+                  review_body: "We couldn't find the werewolf!",
+                  designer: "Akihisa Okui",
+                  review_img_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+                  votes: 15,
+                  category: "social deduction",
+                  owner: "bainesface",
+                  created_at: "2021-01-25 11:16:54.963",
+                  comment_count: 3,
+                },
+              },
+            },
+            "GET /api/reviews/:review_id/comments": {
+              description: "serves an array of all comments associated with the given review",
+              queries: [],
+              examplePath: "/api/reviews/2/comments",
+              exampleResponse: {
+                comments: [
+                  {
+                    comment_id: 1,
+                    votes: 16,
+                    created_at: "2017-11-22T12:43:33.389V",
+                    author: "bainesface",
+                    body: "I loved this game too!",
+                    review_id: 2,
+                  },
+                ],
+              },
+            },
+            "GET /api/users": {
+              description: "serves an array of all users",
+              queries: [],
+              exampleResponse: {
+                users: [
+                  {
+                    username: "",
+                    name: "",
+                    avatar_url: "",
+                  },
+                ],
+              },
+            },
+            "DELETE /api/comments/:comment_id": {
+              description: "deletes the comment with the given comment_id and serves no response",
+              queries: [],
+              examplePath: "/api/comments/2",
+              exampleResponse: {},
+            },
+          });
+        });
+    });
   });
 });
 

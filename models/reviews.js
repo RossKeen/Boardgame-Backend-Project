@@ -99,7 +99,7 @@ exports.addComment = (review_id, newComment) => {
         userArr.push(user.username);
       });
       if (!userArr.includes(newComment.username)) {
-        return Promise.reject({ status: 401, msg: "Invalid user" });
+        return Promise.reject({ status: 400, msg: "Invalid user" });
       }
       return db.query("INSERT INTO comments (body, review_id, author, votes, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *;", [newComment.body, review_id, newComment.username, 0, new Date()]);
     })

@@ -324,7 +324,7 @@ describe("/api/reviews/:review_id/comments", () => {
         return request(app)
           .post("/api/reviews/1/comments")
           .send({ username: "rosskeen97", body: "Is this named after the roman general Agricola?" })
-          .expect(401)
+          .expect(400)
           .then(({ body }) => {
             expect(body.msg).toBe("Invalid user");
           });

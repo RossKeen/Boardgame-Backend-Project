@@ -320,6 +320,15 @@ describe("/api/reviews/:review_id/comments", () => {
             expect(body.msg).toBe("Not found");
           });
       });
+      test("401: responds with an appropriate error when a non-existent username tries to comment", () => {
+        return request(app)
+          .post("/api/reviews/1/comments")
+          .send({ username: "rosskeen97", body: "Is this named after the roman general Agricola?" })
+          .expect(401)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid user");
+          });
+      });
     });
   });
 });

@@ -254,7 +254,7 @@ describe("/api/reviews/:review_id/comments", () => {
         });
     });
     describe("Error Handling", () => {
-      test("404: responds with an appropriate error when no review exits with the ID parameter", () => {
+      test("404: responds with an appropriate error when no review exists with the ID parameter", () => {
         return request(app)
           .get("/api/reviews/9999/comments")
           .expect(404)
@@ -301,6 +301,7 @@ describe("/api/reviews/:review_id/comments", () => {
       test("400: responds with an appropriate error when the review_id is invalid and does not post the comment", () => {
         return request(app)
           .post("/api/reviews/ten/comments")
+          .send({ username: "philippaclaire9", body: "A bit too french for me..." })
           .expect(400)
           .then(({ body }) => {
             expect(body.msg).toBe("Bad path");
@@ -308,6 +309,15 @@ describe("/api/reviews/:review_id/comments", () => {
           })
           .then(({ rows }) => {
             expect(rows[0].comment_count).toBe("6");
+          });
+      });
+      test("404: responds with an appropriate error when no review exists with the ID parameter", () => {
+        return request(app)
+          .post("/api/reviews/9999/comments")
+          .send({ username: "philippaclaire9", body: "A bit too french for me..." })
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Not found");
           });
       });
     });

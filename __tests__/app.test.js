@@ -219,6 +219,61 @@ describe("/api/reviews/:review_id", () => {
   });
 });
 
+describe("/api/reviews/:review_id/comments", () => {
+  describe("GET", () => {
+    test("200: should respond with an array of comment objects, each of which with the correct properties", () => {
+      return request(app)
+        .get("/api/reviews/2/comments")
+        .expect(200)
+        .expect("Content-Type", "application/json; charset=utf-8")
+        .then(({ body }) => {
+          const { comments } = body;
+          expect(Array.isArray(comments)).toBe(true);
+          expect(comments.length).toBe(3);
+          comments.forEach((comment) => {
+            expect(typeof comment).toBe("object");
+            expect(comment).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                review_id: 2,
+              })
+            );
+          });
+        });
+    });
+    test("200: responds with an empty array if the review_id is valid but there are no comments", () => {
+      return request(app)
+        .get("/api/reviews/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toEqual([]);
+        });
+    });
+    describe("Error Handling", () => {
+      test("404: responds with an appropriate error when no review exits with the ID parameter", () => {
+        return request(app)
+          .get("/api/reviews/9999/comments")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("No review exists with that ID");
+          });
+      });
+      test("400: responds with an appropriate error when a user enters an invalid review_id", () => {
+        return request(app)
+          .get("/api/reviews/ten/comments")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad path");
+          });
+      });
+    });
+  });
+});
+
 describe("/api/users", () => {
   describe("GET", () => {
     test("200: Should respond with an array of all users", () => {

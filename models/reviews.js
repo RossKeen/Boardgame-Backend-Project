@@ -60,7 +60,7 @@ exports.selectReviews = (category, order = "DESC", sort_by = "created_at") => {
       if (!["asc", "desc", "ASC", "DESC"].includes(order)) {
         return Promise.reject({ status: 400, msg: "Invalid order query" });
       }
-      if (!["review_id", "title", "review_body", "designer", "review_img)url", "votes", "category", "owner", "created_at", "comment_count"].includes(sort_by)) {
+      if (!["review_id", "title", "review_body", "designer", "review_img_url", "votes", "category", "owner", "created_at", "comment_count"].includes(sort_by)) {
         return Promise.reject({ status: 400, msg: "Invalid sort_by query" });
       }
       queryStr += ` GROUP BY reviews.review_id, reviews.created_at ORDER BY ${sort_by} ${order};`;

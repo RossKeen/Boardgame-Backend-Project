@@ -272,6 +272,31 @@ describe("/api/reviews/:review_id/comments", () => {
       });
     });
   });
+  describe("POST", () => {
+    test("201: should create a new comment object on the specified review", () => {
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send({ username: "philippaclaire9", body: "A bit too french for me..." })
+        .expect(201)
+        .expect("Content-Type", "application/json; charset=utf-8")
+        .then(({ body }) => {
+          const { postedComment } = body;
+          expect(postedComment).toEqual(
+            expect.objectContaining({
+              comment_id: 7,
+              body: "A bit too french for me...",
+              review_id: 1,
+              author: "philippaclaire9",
+              votes: 0,
+              created_at: expect.any(String),
+            })
+          );
+          return db.query("SELECT COUNT(comment_id) AS comment_count FROM comments;").then(({ rows }) => {
+            expect(rows[0].comment_count).toBe("7");
+          });
+        });
+    });
+  });
 });
 
 describe("/api/users", () => {

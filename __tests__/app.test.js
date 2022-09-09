@@ -120,6 +120,62 @@ describe("/api/reviews", () => {
             expect(reviews).toEqual([]);
           });
       });
+      test("200: can be queried with order to choose ascending order", () => {
+        return request(app)
+          .get("/api/reviews?order=asc")
+          .expect(200)
+          .expect("Content-Type", "application/json; charset=utf-8")
+          .then(({ body }) => {
+            const { reviews } = body;
+            expect(Array.isArray(reviews)).toBe(true);
+            expect(reviews.length).toBe(13);
+            reviews.forEach((review) => {
+              expect(review).toEqual(
+                expect.objectContaining({
+                  review_id: expect.any(Number),
+                  title: expect.any(String),
+                  review_body: expect.any(String),
+                  designer: expect.any(String),
+                  review_img_url: expect.any(String),
+                  votes: expect.any(Number),
+                  category: expect.any(String),
+                  owner: expect.any(String),
+                  created_at: expect.any(String),
+                  comment_count: expect.any(Number),
+                })
+              );
+            });
+            expect(reviews).toBeSortedBy("created_at", { descending: false });
+          });
+      });
+      test("200: can be queried with order to choose descending order", () => {
+        return request(app)
+          .get("/api/reviews?order=desc")
+          .expect(200)
+          .expect("Content-Type", "application/json; charset=utf-8")
+          .then(({ body }) => {
+            const { reviews } = body;
+            expect(Array.isArray(reviews)).toBe(true);
+            expect(reviews.length).toBe(13);
+            reviews.forEach((review) => {
+              expect(review).toEqual(
+                expect.objectContaining({
+                  review_id: expect.any(Number),
+                  title: expect.any(String),
+                  review_body: expect.any(String),
+                  designer: expect.any(String),
+                  review_img_url: expect.any(String),
+                  votes: expect.any(Number),
+                  category: expect.any(String),
+                  owner: expect.any(String),
+                  created_at: expect.any(String),
+                  comment_count: expect.any(Number),
+                })
+              );
+            });
+            expect(reviews).toBeSortedBy("created_at", { descending: true });
+          });
+      });
     });
     describe("Error Handling", () => {
       test("400: responds with an error when an invalid category query is entered", () => {

@@ -4,6 +4,7 @@ const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
 const { response } = require("../app");
+const e = require("express");
 require("jest-sorted");
 
 beforeEach(() => {
@@ -414,6 +415,42 @@ describe("/api/reviews", () => {
             body.users.forEach((user) => {
               expect(user).toEqual(expect.objectContaining({ username: expect.any(String), name: expect.any(String), avatar_url: expect.any(String) }));
             });
+          });
+      });
+    });
+  });
+});
+
+describe("/api/comments/:comment_id", () => {
+  describe("DELETE", () => {
+    test("204: deletes the given comment and returns no content", () => {
+      return request(app)
+        .delete("/api/comments/4")
+        .expect(204)
+        .then(({ body }) => {
+          expect(body).toEqual({});
+          return db.query("SELECT comment_id FROM comments;");
+        })
+        .then(({ rows }) => {
+          expect(rows.length).toBe(5);
+          expect(rows).toEqual([{ comment_id: 1 }, { comment_id: 2 }, { comment_id: 3 }, { comment_id: 5 }, { comment_id: 6 }]);
+        });
+    });
+    describe("Error Handling", () => {
+      test("400: responds with an appropriate error when an invalid comment_id is entered", () => {
+        return request(app)
+          .delete("/api/comments/eight")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid comment ID");
+          });
+      });
+      test("404: responds with an appropriate error when the specified comment_id does not exist", () => {
+        return request(app)
+          .delete("/api/comments/9999")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("No comment exists with that ID");
           });
       });
     });

@@ -436,5 +436,15 @@ describe("/api/comments/:comment_id", () => {
           expect(rows).toEqual([{ comment_id: 1 }, { comment_id: 2 }, { comment_id: 3 }, { comment_id: 5 }, { comment_id: 6 }]);
         });
     });
+    describe("Error Handling", () => {
+      test("400: responds with an appropriate error when an invalid comment_id is entered", () => {
+        return request(app)
+          .delete("/api/comments/eight")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid comment ID");
+          });
+      });
+    });
   });
 });

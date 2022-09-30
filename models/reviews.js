@@ -77,7 +77,7 @@ exports.selectReviews = (category, order = "DESC", sort_by = "created_at") => {
 
 exports.selectCommentsByReviewId = (review_id) => {
   return db
-    .query("SELECT * FROM comments WHERE review_id = $1;", [review_id])
+    .query("SELECT * FROM comments WHERE review_id = $1 ORDER BY created_at DESC;", [review_id])
     .then(({ rows }) => {
       if (rows.length) {
         return rows;
